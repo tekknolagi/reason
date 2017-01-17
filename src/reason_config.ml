@@ -7,3 +7,9 @@ let recoverable = ref false
 let configure ~r = (
   recoverable := r
 )
+
+(* TODO: remove *)
+let () = print_endline "Hello, world!"
+
+
+

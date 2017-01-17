@@ -18,6 +18,7 @@ module Reason_interface_printer : Printer_maker.PRINTER =
             (match filetype with
             | None -> defaultInterfaceParserFor use_stdin filename
             | Some "binary_reason" -> Printer_maker.reasonBinaryParser use_stdin filename
+            | Some "binary" -> Printer_maker.ocamlBinaryParser use_stdin filename true
             | Some "ml" ->
                     let lexbuf = Reason_toolchain.setup_lexbuf use_stdin filename in
                     let intf = Reason_toolchain.ML.canonical_interface_with_comments in
@@ -26,13 +27,11 @@ module Reason_interface_printer : Printer_maker.PRINTER =
                     let lexbuf = Reason_toolchain.setup_lexbuf use_stdin filename in
                     let intf = Reason_toolchain.JS.canonical_interface_with_comments in
                     ((intf lexbuf), false, true)
-            | Some s ->
-                    raise (Invalid_config ("Invalid --parse setting for interface '" ^ s ^ "'.")))
+            | Some s -> raise (Invalid_config ("Invalid --parse setting for interface '" ^ s ^ "'.")))
             in
-            if parsedAsInterface then
-                ((ast, comments), parsedAsML)
-            else
+            if not parsedAsInterface then
                 raise (Invalid_config ("The file parsed does not appear to be an interface file."))
+            else ((ast, comments), parsedAsML)
 
         let makePrinter printtype filename parsedAsML output_chan =
             let output_formatter = Format.formatter_of_out_channel output_chan in

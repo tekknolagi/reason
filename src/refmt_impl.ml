@@ -105,10 +105,6 @@ let () =
   let _ = if !recoverable then
     Reason_config.configure ~r:true
   in
-  let output_chan = match !output_file with
-    | Some name -> open_out name
-    | None -> stdout
-  in
   Location.input_name := filename;
   let intf = match !intf with
     | None when (Filename.check_suffix filename ".rei" || Filename.check_suffix filename ".mli") -> true
@@ -126,8 +122,16 @@ let () =
       else (module Reason_implementation_printer)
     in
     let (ast, parsedAsML) = Printer.parse !prse use_stdin filename in
+    let output_chan = match !output_file with
+                      | Some name -> open_out name
+                      | None -> stdout
+    in
     let thePrinter = Printer.makePrinter !prnt filename parsedAsML output_chan in
-    thePrinter ast
+    let () = thePrinter ast in
+    let () = flush output_chan in
+    match !output_file with
+    | Some _ -> close_out output_chan
+    | None -> ()
   with
   | exn ->
     Location.report_exception Format.err_formatter exn;
