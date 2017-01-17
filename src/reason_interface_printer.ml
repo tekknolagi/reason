@@ -13,23 +13,11 @@ module Reason_interface_printer : Printer_maker.PRINTER =
                 raise (Invalid_config ("Cannot determine default interface parser for filename '" ^ filename ^ "'."))
                 )
 
-        let reasonBinaryParser use_stdin filename =
-          let chan =
-            match use_stdin with
-              | true -> stdin
-              | false ->
-                  let file_chan = open_in filename in
-                  seek_in file_chan 0;
-                  file_chan
-          in
-          let (magic_number, filename, ast, comments, parsedAsML, parsedAsInterface) = input_value chan in
-          ((ast, comments), parsedAsML, parsedAsInterface)
-
         let parse filetype use_stdin filename =
             let ((ast, comments), parsedAsML, parsedAsInterface) =
             (match filetype with
             | None -> defaultInterfaceParserFor use_stdin filename
-            | Some "binary_reason" -> reasonBinaryParser use_stdin filename
+            | Some "binary_reason" -> Printer_maker.reasonBinaryParser use_stdin filename
             | Some "ml" ->
                     let lexbuf = Reason_toolchain.setup_lexbuf use_stdin filename in
                     let intf = Reason_toolchain.ML.canonical_interface_with_comments in

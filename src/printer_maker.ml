@@ -11,3 +11,15 @@ module type PRINTER =
         out_channel ->
         ((t * Reason_pprint_ast.commentWithCategory) -> unit)
     end
+
+let reasonBinaryParser use_stdin filename =
+  let chan =
+    match use_stdin with
+      | true -> stdin
+      | false ->
+          let file_chan = open_in filename in
+          seek_in file_chan 0;
+          file_chan
+  in
+  let (magic_number, filename, ast, comments, parsedAsML, parsedAsInterface) = input_value chan in
+  ((ast, comments), parsedAsML, parsedAsInterface)

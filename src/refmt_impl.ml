@@ -105,7 +105,6 @@ let () =
   let _ = if !recoverable then
     Reason_config.configure ~r:true
   in
-  (* max TODO: fix output to input file *)
   let output_chan = match !output_file with
     | Some name -> open_out name
     | None -> stdout
@@ -122,12 +121,12 @@ let () =
       ~constructorLists
   in
   try
-    (* let int_bumper = (module Int_bumper : Bumpable with type t = int) in *)
-    let intfprinter = (module Reason_interface_printer : Printer_maker.PRINTER (* : Printer_maker.PRINTER with type t = Parsetree.signature *)) in
-    let implprinter = (module Reason_implementation_printer : Printer_maker.PRINTER (* : Printer_maker.PRINTER with type t = Parsetree.structure *)) in
-    let (module printer : Printer_maker.PRINTER) = implprinter in (* if intf then intfprinter else implprinter in *)
-    let (ast, parsedAsML) = printer.parse !prse use_stdin filename in
-    let thePrinter = printer.makePrinter !prnt filename parsedAsML output_chan in
+    let (module Printer : Printer_maker.PRINTER) =
+      if intf then (module Reason_interface_printer)
+      else (module Reason_implementation_printer)
+    in
+    let (ast, parsedAsML) = Printer.parse !prse use_stdin filename in
+    let thePrinter = Printer.makePrinter !prnt filename parsedAsML output_chan in
     thePrinter ast
   with
   | exn ->
