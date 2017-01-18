@@ -111,16 +111,16 @@ let () =
     | None -> false
     | Some b -> b
   in
+  let (module Printer : Printer_maker.PRINTER) =
+    if intf then (module Reason_interface_printer)
+    else (module Reason_implementation_printer)
+  in
   let _ = Reason_pprint_ast.configure
       ~width: print_width
       ~assumeExplicitArity: !assumeExplicitArity
       ~constructorLists
   in
   try
-    let (module Printer : Printer_maker.PRINTER) =
-      if intf then (module Reason_interface_printer)
-      else (module Reason_implementation_printer)
-    in
     let (ast, parsedAsML) = Printer.parse !prse use_stdin filename in
     let output_chan = match !output_file with
                       | Some name -> open_out name
