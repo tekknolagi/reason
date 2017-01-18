@@ -17,10 +17,14 @@ module Reason_implementation_printer : Printer_maker.PRINTER =
             | None -> defaultImplementationParserFor use_stdin filename
             | Some "binary_reason" -> Printer_maker.reasonBinaryParser use_stdin filename
             | Some "binary" -> Printer_maker.ocamlBinaryParser use_stdin filename false
-            | Some "ml" -> (Reason_toolchain.ML.canonical_implementation_with_comments (Reason_toolchain.setup_lexbuf use_stdin filename), true, false)
+            | Some "ml" ->
+                    let lexbuf = Reason_toolchain.setup_lexbuf use_stdin filename in
+                    let impl = Reason_toolchain.ML.canonical_implementation_with_comments in
+                    (impl lexbuf, true, false)
             | Some "re" ->
                     let lexbuf = Reason_toolchain.setup_lexbuf use_stdin filename in
-                    (Reason_toolchain.JS.canonical_implementation_with_comments lexbuf, false, false)
+                    let impl = Reason_toolchain.JS.canonical_implementation_with_comments in
+                    (impl lexbuf, false, false)
             | Some s -> raise (Invalid_config ("Invalid --parse setting for implementation '" ^ s ^ "'.")))
             in
             if parsedAsInterface then
