@@ -122,13 +122,17 @@ let () =
   in
   try
     let (ast, parsedAsML) = Printer.parse !prse use_stdin filename in
-    let output_chan = match !output_file with
-                      | Some name -> open_out name
-                      | None -> stdout
+    (* As it turns out, calling formatter_of_out_channel on stdout results in
+       missing output. So we don't do that. *)
+    let (output_chan, output_formatter) =
+        match !output_file with
+        | Some name ->
+                let ochan = open_out name in
+                (ochan, Format.formatter_of_out_channel ochan)
+        | None -> (stdout, Format.std_formatter)
     in
-    let thePrinter = Printer.makePrinter !prnt filename parsedAsML output_chan in
+    let thePrinter = Printer.makePrinter !prnt filename parsedAsML output_chan output_formatter in
     let () = thePrinter ast in
-    let () = flush output_chan in
     match !output_file with
     | Some _ -> close_out output_chan
     | None -> ()

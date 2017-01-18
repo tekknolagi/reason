@@ -9,6 +9,7 @@ module type PRINTER =
         string ->
         bool ->
         out_channel ->
+        Format.formatter ->
         ((t * Reason_pprint_ast.commentWithCategory) -> unit)
     end
 

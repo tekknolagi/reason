@@ -31,8 +31,7 @@ module Reason_implementation_printer : Printer_maker.PRINTER =
               raise (Invalid_config ("The file parsed does not appear to be an implementation file."))
             else ((ast, comments), parsedAsML)
 
-        let makePrinter printtype filename parsedAsML output_chan =
-            let output_formatter = Format.formatter_of_out_channel output_chan in
+        let makePrinter printtype filename parsedAsML output_chan output_formatter =
             match printtype with
             | Some "binary_reason" -> fun (ast, comments) -> (
               (* Our special format for interchange between reason should keep the
