@@ -64,6 +64,7 @@ let () =
     "-heuristics-file", Arg.String (fun x -> prerr_endline "-heuristics-file is deprecated; use --heuristics-file instead"; heuristics_file := Some x), "";
     "--heuristics-file", Arg.String (fun x -> heuristics_file := Some x),
     "<path>, load path as a heuristics file to specify which constructors are defined with multi-arguments. Mostly used in removing [@implicit_arity] introduced from OCaml conversion.\n\t\texample.txt:\n\t\tConstructor1\n\t\tConstructor2";
+    "--output", Arg.String (fun x -> output_file := Some x; writing_to_file := true), "<output-file>, output file for printing";
     "-o", Arg.String (fun x -> output_file := Some x; writing_to_file := true), "<output-file>, output file for printing";
     "-h", Arg.Unit (fun () -> print_help := true), " Display this list of options";
   ] in
