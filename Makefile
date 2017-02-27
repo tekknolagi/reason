@@ -85,7 +85,7 @@ SUBSTS:=$(ROOT_DIR)/pkg/substs
 
 pre_release:
 ifndef version
-	$(error enviorment variable 'version' is undefined)
+	$(error Environment variable 'version' is undefined)
 endif
 	export git_version="$(shell git rev-parse --verify HEAD)"; \
 	export git_short_version="$(shell git rev-parse --short HEAD)"; \
