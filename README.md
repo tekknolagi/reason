@@ -106,6 +106,7 @@ opam switch 4.03.0
 eval $(opam config env)
 git clone git@github.com:facebook/reason.git
 cd reason
+opam pin add -y reason-refmt reason-refmt
 opam pin add -y reason .
 ```
 
